@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Timer</title>
+    <style>
+      body {
+        font-family: Inter, sans-serif;
+        background: #0000;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        overflow-y: hidden;
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      .timer {
+        font-size: 100px;
+        font-weight: 600;
+        color: #ff8001;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 15px;
+      }
+
+      button {
+        background: transparent;
+        border: 1px solid #ff8001;
+        color: #ff8001;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 25px;
+        transition: 0.2s;
+      }
+
+      button:hover {
+        background: #ff8001;
+        color: white;
+      }
+
+      button:active {
+        transform: scale(0.96);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="timer" id="timer">00:00</div>
+
+      <div class="buttons">
+        <!-- <button onclick="startTimer(300)">5 MIN</button> -->
+        <button onclick="startTimer(4800)">1H 20</button>
+      </div>
+
+      <div class="buttons">
+        <button onclick="togglePause()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+      </div>
+    </div>
+
+    <script>
+      let time = 0;
+      let interval = null;
+      let running = false;
+      let lastPreset = 0;
+
+      function formatTime(t) {
+        const m = Math.floor(t / 60)
+          .toString()
+          .padStart(2, "0");
+        const s = (t % 60).toString().padStart(2, "0");
+        return `${m}:${s}`;
+      }
+
+      function updateDisplay() {
+        document.getElementById("timer").textContent = formatTime(time);
+      }
+
+      function startTimer(seconds) {
+        clearInterval(interval);
+        time = seconds;
+        lastPreset = seconds;
+        running = true;
+        updateDisplay();
+
+        interval = setInterval(() => {
+          if (time > 0) {
+            time--;
+            updateDisplay();
+          } else {
+            clearInterval(interval);
+            running = false;
+          }
+        }, 1000);
+      }
+
+      function togglePause() {
+        if (!interval && time === 0) return;
+
+        if (running) {
+          clearInterval(interval);
+          running = false;
+        } else {
+          running = true;
+          interval = setInterval(() => {
+            if (time > 0) {
+              time--;
+              updateDisplay();
+            } else {
+              clearInterval(interval);
+              running = false;
+            }
+          }, 1000);
+        }
+      }
+
+      function resetTimer() {
+        clearInterval(interval);
+        time = lastPreset;
+        running = false;
+        updateDisplay();
+      }
+    </script>
+  </body>
+</html>
